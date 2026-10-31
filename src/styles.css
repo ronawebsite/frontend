@@ -1,0 +1,141 @@
+@import "tailwindcss";
+
+@layer base {
+  body {
+    background-color: #070c18;
+    color: #f8fafc;
+    font-family: 'Nunito', 'Segoe UI', system-ui, sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+    -webkit-tap-highlight-color: transparent;
+  }
+}
+
+/* Obsidian Trust Bank Luxury FinTech Theme Styles */
+.glass-panel {
+  background: rgba(15, 23, 42, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.glass-panel-hover {
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.glass-panel-hover:hover {
+  background: rgba(19, 31, 55, 0.95);
+  border-color: rgba(11, 180, 210, 0.35);
+  box-shadow: 0 10px 30px -10px rgba(11, 180, 210, 0.2);
+}
+
+/* Buttons from Obsidian Trust Bank */
+.theme_btn {
+  background-color: #003432;
+  color: #ffffff;
+  font-family: 'Nunito', sans-serif;
+  font-weight: 700;
+  text-align: center;
+  display: inline-block;
+  padding: 10px 24px;
+  border-radius: 12px;
+  transition: all 0.3s ease;
+  font-size: 13px;
+  letter-spacing: 0.3px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+.theme_btn:hover {
+  background-color: #0BB4D2;
+  color: #ffffff;
+  box-shadow: 0 6px 18px rgba(11, 180, 210, 0.3);
+}
+
+.btn-cyan-gradient {
+  background-image: linear-gradient(135deg, #0284c7 0%, #0BB4D2 100%);
+  color: #ffffff;
+  font-weight: 700;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 15px -2px rgba(11, 180, 210, 0.3);
+}
+.btn-cyan-gradient:hover {
+  background-image: linear-gradient(135deg, #0369a1 0%, #0997b1 100%);
+  box-shadow: 0 8px 25px -4px rgba(11, 180, 210, 0.45);
+  transform: translateY(-1px);
+}
+.btn-cyan-gradient:active {
+  transform: translateY(0);
+}
+
+.btn-emerald-gradient {
+  background-image: linear-gradient(135deg, #059669 0%, #10b981 100%);
+  color: #ffffff;
+  font-weight: 700;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 15px -2px rgba(16, 185, 129, 0.3);
+}
+.btn-emerald-gradient:hover {
+  background-image: linear-gradient(135deg, #047857 0%, #059669 100%);
+  box-shadow: 0 8px 25px -4px rgba(16, 185, 129, 0.45);
+  transform: translateY(-1px);
+}
+
+/* 3D Virtual Card Flip Animation Styles */
+.perspective-1000 {
+  perspective: 1000px;
+}
+
+.transform-style-3d {
+  transform-style: preserve-3d;
+}
+
+.backface-hidden {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.rotate-y-180 {
+  transform: rotateY(180deg);
+}
+
+/* Custom Sleek Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #070c18;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #1e293b;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #334155;
+}
+
+/* Mobile Slide-Up Tray Animation */
+@keyframes slideUp {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.animate-slide-up {
+  animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.2s ease-out forwards;
+}
