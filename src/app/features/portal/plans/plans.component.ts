@@ -168,7 +168,7 @@ import { PlanGrowthChartComponent } from '../../../shared/charts/plan-growth-cha
                 <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase bg-[#003432] text-cyan-300 border border-[#0BB4D2]/40">
                   {{ p.badge || (p.duration_days + ' Days') }}
                 </span>
-                <span class="text-2xl">{{ p.icon || '📈' }}</span>
+                <span class="text-2xl">{{ getPlanIcon(p.icon) }}</span>
               </div>
 
               <div>
@@ -393,6 +393,19 @@ export class PlansComponent implements OnInit {
       },
       error: () => {}
     });
+  }
+
+  getPlanIcon(icon?: string): string {
+    const map: Record<string, string> = {
+      'bolt': '⚡',
+      'rocket': '🚀',
+      'chart-line': '📈',
+      'gem': '💎',
+      'crown': '👑',
+      'fire': '🔥',
+      'target': '🎯'
+    };
+    return (icon && map[icon]) ? map[icon] : (icon || '📈');
   }
 
   getUsdBalance(): number {
