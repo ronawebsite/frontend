@@ -137,6 +137,21 @@ import { ToastContainerComponent } from '../../shared/components/toast-container
             </a>
 
             <a
+              routerLink="/admin/deposit-wallets"
+              routerLinkActive="bg-purple-600 text-white font-black shadow-md shadow-purple-600/30"
+              (click)="closeMobileSidebar()"
+              class="flex items-center space-x-3 px-3 py-2.5 rounded-xl text-slate-300 hover:text-white hover:bg-purple-900/30 transition group"
+            >
+              <span class="text-base">💳</span>
+              <div class="flex-1 flex items-center justify-between">
+                <span>Deposit Wallets</span>
+                <span class="px-1.5 py-0.5 text-[9px] font-bold bg-[#0BB4D2]/20 text-cyan-300 border border-[#0BB4D2]/30 rounded">
+                  VAULT
+                </span>
+              </div>
+            </a>
+
+            <a
               routerLink="/admin/support"
               routerLinkActive="bg-purple-600 text-white font-black shadow-md shadow-purple-600/30"
               (click)="closeMobileSidebar()"

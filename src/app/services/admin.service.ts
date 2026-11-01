@@ -134,4 +134,27 @@ export class AdminService {
   toggleLiveDrift(enabled: boolean): Observable<any> {
     return this.http.post<any>(`${environment.apiUrl}/admin/toggle-drift`, { enabled });
   }
+
+  // =========================================================================
+  // PLATFORM DEPOSIT WALLETS MANAGEMENT
+  // =========================================================================
+  getDepositWallets(): Observable<{ success: boolean; data: any[] }> {
+    return this.http.get<{ success: boolean; data: any[] }>(`${environment.apiUrl}/admin/deposit-wallets`);
+  }
+
+  createDepositWallet(payload: any): Observable<any> {
+    return this.http.post<any>(`${environment.apiUrl}/admin/deposit-wallets`, payload);
+  }
+
+  updateDepositWallet(id: number, payload: any): Observable<any> {
+    return this.http.put<any>(`${environment.apiUrl}/admin/deposit-wallets/${id}`, payload);
+  }
+
+  toggleDepositWallet(id: number): Observable<any> {
+    return this.http.patch<any>(`${environment.apiUrl}/admin/deposit-wallets/${id}/toggle`, {});
+  }
+
+  deleteDepositWallet(id: number): Observable<any> {
+    return this.http.delete<any>(`${environment.apiUrl}/admin/deposit-wallets/${id}`);
+  }
 }

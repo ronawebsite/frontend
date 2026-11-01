@@ -18,6 +18,10 @@ export class WalletService {
     return this.http.get<any>(`${environment.apiUrl}/wallet/deposit-address/${asset}`);
   }
 
+  getDepositMethods(): Observable<{ success: boolean; data: any[] }> {
+    return this.http.get<{ success: boolean; data: any[] }>(`${environment.apiUrl}/wallet/deposit-methods`);
+  }
+
   sandboxDeposit(asset: string, amount: number): Observable<any> {
     return this.http.post<any>(`${environment.apiUrl}/wallet/deposit-sandbox`, { asset, amount });
   }

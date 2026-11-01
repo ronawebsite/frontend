@@ -82,15 +82,48 @@ import { PortfolioSummary, Transaction, Wallet } from '../../../core/models/fint
 
             <div class="space-y-2 flex-1 w-full text-xs">
               <div>
-                <span class="text-slate-400 block text-[10px] uppercase font-bold">Wallet Address:</span>
-                <div class="font-mono text-slate-200 bg-[#070c18] p-2.5 rounded-xl border border-white/10 break-all select-all font-semibold">
+                <div class="flex items-center justify-between mb-1">
+                  <span class="text-slate-400 block text-[10px] uppercase font-bold">Official Deposit Address:</span>
+                  <button
+                    type="button"
+                    (click)="copyDepositAddress()"
+                    class="text-[10px] px-2 py-0.5 rounded-lg bg-white/10 hover:bg-[#0BB4D2]/20 text-[#0BB4D2] font-bold transition flex items-center space-x-1"
+                  >
+                    <span>{{ depositCopied() ? '✓ Copied' : '📋 Copy Address' }}</span>
+                  </button>
+                </div>
+                <div
+                  (click)="copyDepositAddress()"
+                  class="font-mono text-slate-200 bg-[#070c18] p-2.5 rounded-xl border border-white/10 break-all select-all font-semibold text-[11px] leading-relaxed cursor-pointer hover:border-[#0BB4D2]/40 transition"
+                  title="Click to copy address"
+                >
                   {{ depositAddress() || 'Fetching address...' }}
                 </div>
               </div>
+
+              <!-- Memo / Destination Tag (if required, e.g. for XRP/BNB) -->
+              <div *ngIf="depositMemoTag()" class="p-2.5 bg-[#070c18] rounded-xl border border-amber-500/30 flex items-center justify-between text-xs font-mono">
+                <div>
+                  <span class="text-amber-400 text-[10px] block font-bold uppercase">Memo / Destination Tag:</span>
+                  <span class="text-white font-bold">{{ depositMemoTag() }}</span>
+                </div>
+                <button
+                  type="button"
+                  (click)="copyMemoTag()"
+                  class="text-[10px] px-2.5 py-1 rounded-lg bg-amber-500/20 text-amber-300 font-bold hover:bg-amber-500/30 transition"
+                >
+                  Copy Tag
+                </button>
+              </div>
+
               <div class="flex items-center justify-between text-[11px] text-slate-400 font-mono">
                 <span>Network: <strong class="text-white">{{ depositNetwork() }}</strong></span>
-                <span class="text-emerald-400 font-bold">Instant Credit Available</span>
+                <span class="text-emerald-400 font-bold">Min: {{ depositMinAmount() }} {{ selectedDepositAsset }}</span>
               </div>
+
+              <p *ngIf="depositInstructions()" class="text-[10px] text-slate-400 italic">
+                ℹ️ {{ depositInstructions() }}
+              </p>
             </div>
           </div>
 
@@ -291,6 +324,10 @@ export class WalletComponent implements OnInit {
   selectedDepositAsset = 'USDT';
   depositAddress = signal<string>('');
   depositNetwork = signal<string>('Mainnet Layer 1');
+  depositMemoTag = signal<string | null>(null);
+  depositInstructions = signal<string | null>(null);
+  depositMinAmount = signal<number>(10);
+  depositCopied = signal<boolean>(false);
   qrDataUrl = signal<string>('');
 
   simulatedDepositAmount = 1000;
@@ -316,7 +353,23 @@ export class WalletComponent implements OnInit {
       }
     });
 
-    this.onDepositAssetChange();
+    // Load active deposit methods from platform deposit wallets if available
+    this.walletService.getDepositMethods().subscribe({
+      next: (res) => {
+        if (res.success && Array.isArray(res.data) && res.data.length > 0) {
+          const symbols = res.data.map((m: any) => m.asset_symbol);
+          this.supportedAssets = symbols;
+          if (!this.supportedAssets.includes(this.selectedDepositAsset)) {
+            this.selectedDepositAsset = this.supportedAssets[0];
+          }
+          this.onDepositAssetChange();
+        } else {
+          this.onDepositAssetChange();
+        }
+      },
+      error: () => this.onDepositAssetChange()
+    });
+
     this.loadTransactions();
   }
 
@@ -325,6 +378,9 @@ export class WalletComponent implements OnInit {
       if (res.success) {
         this.depositAddress.set(res.data.deposit_address);
         this.depositNetwork.set(res.data.network);
+        this.depositMemoTag.set(res.data.memo_tag || null);
+        this.depositInstructions.set(res.data.instructions || null);
+        this.depositMinAmount.set(res.data.minimum_deposit || 10);
         try {
           const url = await QRCode.toDataURL(res.data.deposit_address, {
             width: 200,
@@ -337,6 +393,22 @@ export class WalletComponent implements OnInit {
         }
       }
     });
+  }
+
+  copyDepositAddress() {
+    const addr = this.depositAddress();
+    if (!addr) return;
+    navigator.clipboard.writeText(addr);
+    this.depositCopied.set(true);
+    this.toast.success('Official deposit address copied to clipboard');
+    setTimeout(() => this.depositCopied.set(false), 2000);
+  }
+
+  copyMemoTag() {
+    const tag = this.depositMemoTag();
+    if (!tag) return;
+    navigator.clipboard.writeText(tag);
+    this.toast.success('Memo / Tag copied to clipboard');
   }
 
   executeSandboxDeposit() {

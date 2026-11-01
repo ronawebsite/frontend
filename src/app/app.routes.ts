@@ -139,6 +139,10 @@ export const routes: Routes = [
         loadComponent: () => import('./features/admin/plan-manager/plan-manager.component').then(m => m.PlanManagerComponent)
       },
       {
+        path: 'deposit-wallets',
+        loadComponent: () => import('./features/admin/deposit-wallets/deposit-wallets.component').then(m => m.AdminDepositWalletsComponent)
+      },
+      {
         path: 'support',
         loadComponent: () => import('./features/admin/support-manager/support-manager.component').then(m => m.AdminSupportManagerComponent)
       },
