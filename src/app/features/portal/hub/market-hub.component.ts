@@ -17,9 +17,9 @@ import { AuthService } from '../../../services/auth.service';
       <!-- ========================================================================= -->
       <div class="text-center space-y-3">
         <div class="inline-flex items-center space-x-2 px-4 py-1.5 rounded-full bg-[#003432] border border-[#0BB4D2]/30 text-xs font-bold text-[#0BB4D2] shadow-sm">
-          <span>🏛️ Multi-Asset FinTech Simulation Platform</span>
+          <span>🏛️ Multi-Asset Institutional Platform</span>
           <span class="text-white">•</span>
-          <span class="text-slate-200">Free $10,000 Demo Grant</span>
+          <span class="text-slate-200">Live Crypto &amp; Stock Markets</span>
         </div>
 
         <h1 class="text-3xl sm:text-4xl lg:text-5xl font-black text-white tracking-tight">

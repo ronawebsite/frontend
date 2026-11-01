@@ -44,7 +44,7 @@ import { AuthService } from '../../services/auth.service';
         </div>
 
         <div class="hidden sm:flex items-center space-x-2 shrink-0 text-slate-400 text-[11px]">
-          <span class="text-emerald-400 font-bold">● Free $10,000 Demo Active</span>
+          <span class="text-emerald-400 font-bold">● Live Markets Active</span>
         </div>
       </div>
 

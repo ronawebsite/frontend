@@ -82,10 +82,10 @@ import { PortfolioSummary } from '../../../core/models/fintech.models';
             <span class="text-base">💵</span>
           </div>
           <div class="text-3xl font-mono font-black text-slate-200">
-            \$10,000.00
+            \${{ getInitialCapital() | number:'1.2-2' }}
           </div>
           <div class="text-[11px] text-emerald-400 font-semibold">
-            Starting balance
+            Deposited funds
           </div>
         </div>
 
@@ -297,6 +297,12 @@ export class DashboardComponent implements OnInit {
         }
       }
     });
+  }
+
+  getInitialCapital(): number {
+    const usd = this.portfolio()?.wallets?.find(w => w.asset_symbol === 'USD')?.balance || 0;
+    const usdt = this.portfolio()?.wallets?.find(w => w.asset_symbol === 'USDT')?.balance || 0;
+    return parseFloat((Number(usd) + Number(usdt)).toFixed(2));
   }
 
   getTotalBalance(): number {
