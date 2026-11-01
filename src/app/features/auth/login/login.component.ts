@@ -23,7 +23,7 @@ import { ToastService } from '../../../services/toast.service';
             <span>&larr;</span>
             <span>Back to Homepage</span>
           </a>
-          <span class="text-[11px] text-cyan-300 font-mono font-bold">100% Risk-Free</span>
+          <span class="text-[11px] text-cyan-300 font-mono font-bold">Secure Access</span>
         </div>
 
         <!-- Brand Header -->
@@ -36,29 +36,7 @@ import { ToastService } from '../../../services/toast.service';
           <h1 class="text-2xl sm:text-3xl font-black text-white tracking-tight">
             Sign In to <span class="text-[#0BB4D2]">Fichain Pro</span>
           </h1>
-          <p class="text-xs text-slate-400">Access your practice trading dashboard &amp; smart robots</p>
-        </div>
-
-        <!-- Quick Demo Switcher for University Defense -->
-        <div class="p-3.5 bg-[#002625] rounded-2xl border border-white/10 space-y-2">
-          <div class="text-[10px] font-bold text-slate-300 uppercase tracking-wider flex items-center justify-between">
-            <span>Quick Demo Logins (1-Click)</span>
-            <span class="text-emerald-400 font-bold">Ready</span>
-          </div>
-          <div class="grid grid-cols-2 gap-2 text-xs">
-            <button
-              (click)="fillDemo('user')"
-              class="px-3 py-2 rounded-xl bg-white/5 hover:bg-[#003432] text-cyan-200 font-bold text-left border border-white/10 transition-colors"
-            >
-              👤 Demo Trader
-            </button>
-            <button
-              (click)="fillDemo('admin')"
-              class="px-3 py-2 rounded-xl bg-white/5 hover:bg-[#003432] text-purple-300 font-bold text-left border border-white/10 transition-colors"
-            >
-              🏛️ Admin Panel
-            </button>
-          </div>
+          <p class="text-xs text-slate-400">Access your portfolio &amp; trading desk</p>
         </div>
 
         <!-- Dual-Login Navigation Tabs -->
@@ -87,7 +65,7 @@ import { ToastService } from '../../../services/toast.service';
               type="text"
               [(ngModel)]="email"
               name="email"
-              placeholder="user@mail.com"
+              placeholder="name@example.com"
               required
               class="w-full px-4 py-2.5 rounded-xl bg-[#002625] border border-white/15 text-white text-sm focus:outline-none focus:border-[#0BB4D2] font-mono transition-colors"
             />
@@ -146,7 +124,7 @@ import { ToastService } from '../../../services/toast.service';
         <div class="text-center text-xs text-slate-400 pt-2 border-t border-white/10">
           New to Fichain Pro?
           <a routerLink="/auth/register" class="text-[#0BB4D2] font-bold hover:underline ml-1">
-            Create Free Demo Account
+            Create Account
           </a>
         </div>
       </div>
@@ -161,23 +139,9 @@ export class LoginComponent {
   activeTab = signal<'credentials' | 'phrase'>('credentials');
   loading = signal<boolean>(false);
 
-  email = 'user@mail.com';
-  password = '123456';
-  recoveryPhrase = 'comet mike quebec secure orbit uniform papa elephant sierra victor galaxy quick';
-
-  fillDemo(type: 'user' | 'admin') {
-    if (type === 'admin') {
-      this.email = 'admin@mail.com';
-      this.password = '123456';
-      this.recoveryPhrase = 'alpha bravery castle delta echo foxtrot golf hotel india juliet kilo lima';
-      this.toast.info('Filled credentials for Admin supervisor');
-    } else {
-      this.email = 'user@mail.com';
-      this.password = '123456';
-      this.recoveryPhrase = 'comet mike quebec secure orbit uniform papa elephant sierra victor galaxy quick';
-      this.toast.info('Filled credentials for Pro Trader');
-    }
-  }
+  email = '';
+  password = '';
+  recoveryPhrase = '';
 
   handleLogin() {
     this.loading.set(true);
