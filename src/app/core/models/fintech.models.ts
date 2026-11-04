@@ -171,6 +171,7 @@ export interface Transaction {
   created_at: string;
   full_name?: string;
   email?: string;
+  account_id?: string;
 }
 
 export interface AdminMetrics {

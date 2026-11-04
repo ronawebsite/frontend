@@ -70,112 +70,90 @@ import { ToastContainerComponent } from '../../shared/components/toast-container
         </div>
 
         <!-- Navigation Links -->
-        <nav class="flex-1 py-4 px-3 space-y-4 overflow-y-auto no-scrollbar text-xs font-semibold">
-          <div class="space-y-1">
-            <div class="px-3 pb-1 text-[10px] font-bold uppercase tracking-wider text-purple-300/80">
-              System Operations
-            </div>
-
-            <a
-              routerLink="/admin/overview"
-              routerLinkActive="bg-purple-600 text-white font-black shadow-md shadow-purple-600/30"
-              (click)="closeMobileSidebar()"
-              class="flex items-center space-x-3 px-3 py-2.5 rounded-xl text-slate-300 hover:text-white hover:bg-purple-900/30 transition group"
-            >
-              <span class="text-base">🏛️</span>
-              <span>Platform Liquidity &amp; Stats</span>
-            </a>
-
-            <a
-              routerLink="/admin/users"
-              routerLinkActive="bg-purple-600 text-white font-black shadow-md shadow-purple-600/30"
-              (click)="closeMobileSidebar()"
-              class="flex items-center space-x-3 px-3 py-2.5 rounded-xl text-slate-300 hover:text-white hover:bg-purple-900/30 transition group"
-            >
-              <span class="text-base">👥</span>
-              <span>User &amp; Balance Editor</span>
-            </a>
-
-            <a
-              routerLink="/admin/transactions"
-              routerLinkActive="bg-purple-600 text-white font-black shadow-md shadow-purple-600/30"
-              (click)="closeMobileSidebar()"
-              class="flex items-center space-x-3 px-3 py-2.5 rounded-xl text-slate-300 hover:text-white hover:bg-purple-900/30 transition group"
-            >
-              <span class="text-base">📑</span>
-              <span>Transactions &amp; Security PINs</span>
-            </a>
-
-            <a
-              routerLink="/admin/trade-controller"
-              routerLinkActive="bg-purple-600 text-white font-black shadow-md shadow-purple-600/30"
-              (click)="closeMobileSidebar()"
-              class="flex items-center space-x-3 px-3 py-2.5 rounded-xl text-slate-300 hover:text-white hover:bg-purple-900/30 transition group"
-            >
-              <span class="text-base">⚡</span>
-              <div class="flex-1 flex items-center justify-between">
-                <span>Trade &amp; Profit Controller</span>
-                <span class="px-1.5 py-0.5 text-[9px] font-bold bg-emerald-400/20 text-emerald-300 rounded">
-                  LIVE
-                </span>
-              </div>
-            </a>
-
-            <a
-              routerLink="/admin/plans"
-              routerLinkActive="bg-purple-600 text-white font-black shadow-md shadow-purple-600/30"
-              (click)="closeMobileSidebar()"
-              class="flex items-center space-x-3 px-3 py-2.5 rounded-xl text-slate-300 hover:text-white hover:bg-purple-900/30 transition group"
-            >
-              <span class="text-base">🌱</span>
-              <div class="flex-1 flex items-center justify-between">
-                <span>Growth Plan Controller</span>
-                <span class="px-1.5 py-0.5 text-[9px] font-bold bg-cyan-400/20 text-cyan-300 rounded">
-                  TARGET
-                </span>
-              </div>
-            </a>
-
-            <a
-              routerLink="/admin/deposit-wallets"
-              routerLinkActive="bg-purple-600 text-white font-black shadow-md shadow-purple-600/30"
-              (click)="closeMobileSidebar()"
-              class="flex items-center space-x-3 px-3 py-2.5 rounded-xl text-slate-300 hover:text-white hover:bg-purple-900/30 transition group"
-            >
-              <span class="text-base">💳</span>
-              <div class="flex-1 flex items-center justify-between">
-                <span>Deposit Wallets</span>
-                <span class="px-1.5 py-0.5 text-[9px] font-bold bg-[#0BB4D2]/20 text-cyan-300 border border-[#0BB4D2]/30 rounded">
-                  VAULT
-                </span>
-              </div>
-            </a>
-
-            <a
-              routerLink="/admin/support"
-              routerLinkActive="bg-purple-600 text-white font-black shadow-md shadow-purple-600/30"
-              (click)="closeMobileSidebar()"
-              class="flex items-center space-x-3 px-3 py-2.5 rounded-xl text-slate-300 hover:text-white hover:bg-purple-900/30 transition group"
-            >
-              <span class="text-base">🚨</span>
-              <div class="flex-1 flex items-center justify-between">
-                <span>Support &amp; Disputes</span>
-                <span class="px-1.5 py-0.5 text-[9px] font-bold bg-rose-500/20 text-rose-300 border border-rose-500/30 rounded">
-                  CASES
-                </span>
-              </div>
-            </a>
-
-            <a
-              routerLink="/admin/settings"
-              routerLinkActive="bg-purple-600 text-white font-black shadow-md shadow-purple-600/30"
-              (click)="closeMobileSidebar()"
-              class="flex items-center space-x-3 px-3 py-2.5 rounded-xl text-slate-300 hover:text-white hover:bg-purple-900/30 transition group"
-            >
-              <span class="text-base">⚙️</span>
-              <span>Feature Toggles &amp; Rules</span>
-            </a>
+        <nav class="flex-1 py-4 px-3 space-y-2 overflow-y-auto no-scrollbar text-xs font-semibold">
+          <div class="px-3 pb-1 text-[10px] font-bold uppercase tracking-wider text-slate-400">
+            Main Management
           </div>
+
+          <a
+            routerLink="/admin/overview"
+            routerLinkActive="bg-[#0BB4D2] text-black font-black shadow-lg shadow-[#0BB4D2]/30"
+            (click)="closeMobileSidebar()"
+            class="flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-slate-300 hover:text-white hover:bg-white/10 transition group text-xs font-bold"
+          >
+            <span class="text-base">📊</span>
+            <span>Dashboard</span>
+          </a>
+
+          <a
+            routerLink="/admin/deposit-wallets"
+            routerLinkActive="bg-[#0BB4D2] text-black font-black shadow-lg shadow-[#0BB4D2]/30"
+            (click)="closeMobileSidebar()"
+            class="flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-slate-300 hover:text-white hover:bg-white/10 transition group text-xs font-bold"
+          >
+            <span class="text-base">💳</span>
+            <span>Deposit Wallets</span>
+          </a>
+
+          <a
+            routerLink="/admin/users"
+            routerLinkActive="bg-[#0BB4D2] text-black font-black shadow-lg shadow-[#0BB4D2]/30"
+            (click)="closeMobileSidebar()"
+            class="flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-slate-300 hover:text-white hover:bg-white/10 transition group text-xs font-bold"
+          >
+            <span class="text-base">👥</span>
+            <span>Users &amp; Balances</span>
+          </a>
+
+          <a
+            routerLink="/admin/transactions"
+            routerLinkActive="bg-[#0BB4D2] text-black font-black shadow-lg shadow-[#0BB4D2]/30"
+            (click)="closeMobileSidebar()"
+            class="flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-slate-300 hover:text-white hover:bg-white/10 transition group text-xs font-bold"
+          >
+            <span class="text-base">💸</span>
+            <span>Deposits &amp; Cash Outs</span>
+          </a>
+
+          <a
+            routerLink="/admin/trade-controller"
+            routerLinkActive="bg-[#0BB4D2] text-black font-black shadow-lg shadow-[#0BB4D2]/30"
+            (click)="closeMobileSidebar()"
+            class="flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-slate-300 hover:text-white hover:bg-white/10 transition group text-xs font-bold"
+          >
+            <span class="text-base">📈</span>
+            <span>Trade Profits</span>
+          </a>
+
+          <a
+            routerLink="/admin/plans"
+            routerLinkActive="bg-[#0BB4D2] text-black font-black shadow-lg shadow-[#0BB4D2]/30"
+            (click)="closeMobileSidebar()"
+            class="flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-slate-300 hover:text-white hover:bg-white/10 transition group text-xs font-bold"
+          >
+            <span class="text-base">🌱</span>
+            <span>Growth Plans</span>
+          </a>
+
+          <a
+            routerLink="/admin/support"
+            routerLinkActive="bg-[#0BB4D2] text-black font-black shadow-lg shadow-[#0BB4D2]/30"
+            (click)="closeMobileSidebar()"
+            class="flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-slate-300 hover:text-white hover:bg-white/10 transition group text-xs font-bold"
+          >
+            <span class="text-base">💬</span>
+            <span>Support Messages</span>
+          </a>
+
+          <a
+            routerLink="/admin/settings"
+            routerLinkActive="bg-[#0BB4D2] text-black font-black shadow-lg shadow-[#0BB4D2]/30"
+            (click)="closeMobileSidebar()"
+            class="flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-slate-300 hover:text-white hover:bg-white/10 transition group text-xs font-bold"
+          >
+            <span class="text-base">⚙️</span>
+            <span>Settings</span>
+          </a>
 
           <div class="pt-4 border-t border-purple-900/30 space-y-1">
             <div class="px-3 pb-1 text-[10px] font-bold uppercase tracking-wider text-slate-400">
@@ -217,15 +195,15 @@ import { ToastContainerComponent } from '../../shared/components/toast-container
         <!-- Mobile Header (lg:hidden) -->
         <header class="sticky top-0 z-30 bg-[#001c1c]/95 backdrop-blur-md border-b border-purple-900/40 text-white shadow-md lg:hidden px-4 py-3 flex items-center justify-between">
           <div class="flex items-center space-x-2">
-            <span class="text-sm font-black text-white">Fichain<span class="text-purple-400">Admin</span></span>
-            <span class="px-1.5 py-0.5 text-[9px] font-bold uppercase bg-purple-500/20 text-purple-300 rounded">
-              CONTROL
+            <span class="text-sm font-black text-white">Admin<span class="text-[#0BB4D2]">Panel</span></span>
+            <span class="px-1.5 py-0.5 text-[9px] font-bold uppercase bg-[#0BB4D2]/20 text-[#0BB4D2] rounded">
+              EASY MODE
             </span>
           </div>
 
           <div class="flex items-center space-x-2">
             <a routerLink="/portal/dashboard" class="px-2.5 py-1 rounded-lg bg-teal-900/60 text-cyan-300 text-xs font-bold">
-              Trader Portal
+              User App
             </a>
             <button
               (click)="toggleSidebar()"
@@ -239,15 +217,15 @@ import { ToastContainerComponent } from '../../shared/components/toast-container
         </header>
 
         <!-- Desktop Header (hidden lg:flex) -->
-        <header class="sticky top-0 z-30 bg-[#002625]/90 backdrop-blur-md border-b border-purple-900/40 text-white shadow-sm hidden lg:flex px-8 py-3.5 items-center justify-between">
+        <header class="sticky top-0 z-30 bg-[#002625]/90 backdrop-blur-md border-b border-white/10 text-white shadow-sm hidden lg:flex px-8 py-3.5 items-center justify-between">
           <div>
             <h1 class="text-sm font-bold text-white flex items-center space-x-2">
-              <span>Admin Management Panel</span>
-              <span class="px-2 py-0.5 text-[10px] font-bold uppercase bg-purple-500/20 text-purple-300 border border-purple-500/40 rounded-full">
-                SUPERVISOR
+              <span>Admin Control Center</span>
+              <span class="px-2 py-0.5 text-[10px] font-bold uppercase bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 rounded-full">
+                ONLINE
               </span>
             </h1>
-            <p class="text-xs text-slate-400">Control system liquidity, user balances, security PINs, and feature switches</p>
+            <p class="text-xs text-slate-400">Quickly manage client accounts, deposit addresses, and payouts</p>
           </div>
 
           <div class="flex items-center space-x-4">
@@ -255,7 +233,7 @@ import { ToastContainerComponent } from '../../shared/components/toast-container
               routerLink="/portal/dashboard"
               class="px-3.5 py-1.5 rounded-xl bg-[#003432] hover:bg-[#002625] text-cyan-300 border border-[#0BB4D2]/30 text-xs font-bold transition flex items-center space-x-1.5"
             >
-              <span>📊 Open Trader Portal</span>
+              <span>👁️ View Trader App</span>
             </a>
 
             <button
