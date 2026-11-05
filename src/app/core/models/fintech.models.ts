@@ -172,6 +172,7 @@ export interface Transaction {
   full_name?: string;
   email?: string;
   account_id?: string;
+  receipt_url?: string;
 }
 
 export interface AdminMetrics {

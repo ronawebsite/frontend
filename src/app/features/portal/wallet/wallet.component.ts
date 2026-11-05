@@ -5,7 +5,8 @@ import { ActivatedRoute } from '@angular/router';
 import * as QRCode from 'qrcode';
 import { WalletService } from '../../../services/wallet.service';
 import { ToastService } from '../../../services/toast.service';
-import { PortfolioSummary, Transaction, Wallet } from '../../../core/models/fintech.models';
+import { Transaction } from '../../../core/models/fintech.models';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-wallet',
@@ -24,11 +25,11 @@ import { PortfolioSummary, Transaction, Wallet } from '../../../core/models/fint
               Deposit &amp; Cash Out
             </h1>
             <span class="px-2.5 py-0.5 text-[10px] font-bold rounded-full bg-[#0BB4D2]/20 text-cyan-300 border border-[#0BB4D2]/40">
-              SECURE SANDBOX
+              VERIFIED CUSTODY
             </span>
           </div>
           <p class="text-xs text-cyan-200/80">
-            Instant deposit funding &bull; 2-Step verified cash out
+            Secure multi-crypto deposit funding &bull; 2-Step verified cash out
           </p>
         </div>
 
@@ -54,14 +55,14 @@ import { PortfolioSummary, Transaction, Wallet } from '../../../core/models/fint
       <!-- ========================================================================= -->
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
         
-        <!-- 1. Add Funds (Deposit with QR Code) -->
+        <!-- 1. Real Crypto Deposit Gateway -->
         <div class="glass-panel rounded-3xl p-6 border border-white/10 space-y-5 shadow-xl">
           <div class="flex items-center justify-between border-b border-white/10 pb-3">
             <div>
               <h2 class="text-base font-black text-white flex items-center space-x-2">
-                <span>📥 Add Funds (Deposit)</span>
+                <span>📥 Deposit Funds</span>
               </h2>
-              <p class="text-xs text-slate-400">Scan QR code or use test credit</p>
+              <p class="text-xs text-slate-400">Step 1: Copy official address &amp; transfer funds</p>
             </div>
             <select
               [(ngModel)]="selectedDepositAsset"
@@ -127,24 +128,144 @@ import { PortfolioSummary, Transaction, Wallet } from '../../../core/models/fint
             </div>
           </div>
 
-          <!-- Instant Practice Deposit Form -->
-          <div class="space-y-3 pt-1">
-            <label class="text-xs font-bold text-slate-200">How much would you like to deposit?</label>
-            <div class="flex space-x-2">
-              <input
-                type="number"
-                [(ngModel)]="simulatedDepositAmount"
-                step="any"
-                class="flex-1 px-4 py-2.5 rounded-xl bg-[#002625] border border-white/15 text-white font-mono text-sm focus:outline-none focus:border-[#0BB4D2]"
-              />
+          <!-- SUBMIT PAYMENT PROOF NOTICE (AFTER SUBMISSION) -->
+          <div *ngIf="depositSubmittedNotice()" class="p-4 rounded-2xl bg-emerald-950/60 border border-emerald-500/40 space-y-2">
+            <div class="flex items-center space-x-2 text-emerald-300 font-black text-sm">
+              <span>🎉 Payment Submitted for Approval!</span>
+            </div>
+            <p class="text-xs text-slate-300 leading-relaxed">
+              Your deposit of <strong class="text-emerald-400 font-mono">{{ depositSubmittedNotice()?.amount }} {{ depositSubmittedNotice()?.asset }}</strong> has been logged and is now <span class="text-amber-300 font-bold">Pending Supervisor Review</span>. Funds will be released into your wallet once confirmed by the finance desk.
+            </p>
+            <div class="flex items-center justify-between pt-1 text-[11px]">
+              <span class="text-slate-400 font-mono">Reference ID: #{{ depositSubmittedNotice()?.txId }}</span>
               <button
-                (click)="executeSandboxDeposit()"
-                class="px-5 py-2.5 rounded-xl btn-cyan-gradient font-black text-xs shadow-md shadow-[#0BB4D2]/25"
+                type="button"
+                (click)="depositSubmittedNotice.set(null)"
+                class="text-xs text-cyan-300 hover:underline font-bold"
               >
-                Add Funds Now
+                Submit another deposit &rarr;
               </button>
             </div>
           </div>
+
+          <!-- STEP 2: SUBMIT PAYMENT CONFIRMATION FORM -->
+          <form *ngIf="!depositSubmittedNotice()" (ngSubmit)="submitDepositConfirmation()" class="space-y-3.5 pt-1">
+            <div class="border-t border-white/10 pt-3">
+              <span class="text-[11px] font-black uppercase text-cyan-300 tracking-wider block">
+                Step 2: Submit Payment Confirmation
+              </span>
+              <p class="text-xs text-slate-400 mt-0.5">
+                After sending the funds to the official address above, enter the payment details and upload your transfer receipt for supervisor confirmation.
+              </p>
+            </div>
+
+            <!-- Amount Sent Input -->
+            <div class="space-y-1">
+              <label class="text-xs font-bold text-slate-200 flex items-center justify-between">
+                <span>Amount Transferred *</span>
+                <span class="text-[10px] text-slate-400 font-mono">Min: {{ depositMinAmount() }} {{ selectedDepositAsset }}</span>
+              </label>
+              <div class="relative">
+                <input
+                  type="number"
+                  [(ngModel)]="depositAmount"
+                  name="depositAmount"
+                  required
+                  step="any"
+                  placeholder="e.g. 500"
+                  class="w-full pl-4 pr-16 py-2.5 rounded-xl bg-[#002625] border border-white/15 text-white font-mono text-sm focus:outline-none focus:border-[#0BB4D2]"
+                />
+                <span class="absolute right-3.5 top-2.5 font-mono font-bold text-xs text-[#0BB4D2]">
+                  {{ selectedDepositAsset }}
+                </span>
+              </div>
+            </div>
+
+            <!-- Transaction Hash / TXID (Optional) -->
+            <div class="space-y-1">
+              <label class="text-xs font-bold text-slate-200 flex items-center justify-between">
+                <span>Transaction ID / Hash (Optional)</span>
+                <span class="text-[10px] text-slate-400 font-sans">Blockchain TXID or Reference</span>
+              </label>
+              <input
+                type="text"
+                [(ngModel)]="depositTxHash"
+                name="depositTxHash"
+                placeholder="e.g. 0x8a7f... or transfer reference"
+                class="w-full px-4 py-2 rounded-xl bg-[#002625] border border-white/15 text-white font-mono text-xs placeholder-slate-500 focus:outline-none focus:border-[#0BB4D2]"
+              />
+            </div>
+
+            <!-- Upload Payment Receipt Screenshot -->
+            <div class="space-y-1.5">
+              <label class="text-xs font-bold text-slate-200 flex items-center justify-between">
+                <span>Upload Payment Proof / Screenshot *</span>
+                <span class="text-[10px] text-emerald-400 font-bold">Speeds up verification</span>
+              </label>
+
+              <!-- Upload Area -->
+              <div
+                class="p-4 rounded-2xl border border-dashed border-white/20 hover:border-[#0BB4D2]/60 bg-black/30 transition text-center space-y-2 relative"
+                [ngClass]="receiptPreview() ? 'border-[#0BB4D2]/60 bg-[#0BB4D2]/5' : ''"
+              >
+                <!-- Image Preview if file chosen -->
+                <div *ngIf="receiptPreview()" class="flex flex-col items-center space-y-2">
+                  <div class="relative max-w-[200px] max-h-36 overflow-hidden rounded-xl border border-white/20 shadow-md">
+                    <img [src]="receiptPreview()" alt="Payment Proof Preview" class="w-full h-auto object-cover" />
+                  </div>
+                  <div class="flex items-center space-x-2 text-xs">
+                    <span class="text-emerald-300 font-bold">✓ {{ receiptFileName }}</span>
+                    <button
+                      type="button"
+                      (click)="removeSelectedFile()"
+                      class="px-2 py-0.5 rounded-lg bg-rose-500/20 text-rose-300 hover:bg-rose-500/30 text-[10px] font-bold"
+                    >
+                      ✕ Remove
+                    </button>
+                  </div>
+                </div>
+
+                <!-- File Input Trigger if no file chosen -->
+                <div *ngIf="!receiptPreview()" class="space-y-1">
+                  <span class="text-2xl block">📸</span>
+                  <div class="text-xs font-bold text-white">
+                    Click to select payment receipt or screenshot
+                  </div>
+                  <p class="text-[11px] text-slate-400">
+                    PNG, JPG, JPEG or PDF (Max 10MB)
+                  </p>
+                  <input
+                    type="file"
+                    (change)="onFileSelected($event)"
+                    accept="image/*,application/pdf"
+                    class="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <!-- Optional Sender Note -->
+            <div class="space-y-1">
+              <label class="text-xs font-bold text-slate-200">Sender Notes (Optional)</label>
+              <input
+                type="text"
+                [(ngModel)]="depositNotes"
+                name="depositNotes"
+                placeholder="e.g. Sent from Binance or TrustWallet"
+                class="w-full px-4 py-2 rounded-xl bg-[#002625] border border-white/15 text-white text-xs placeholder-slate-500 focus:outline-none focus:border-[#0BB4D2]"
+              />
+            </div>
+
+            <!-- Submit Confirmation Button -->
+            <button
+              type="submit"
+              [disabled]="submittingDeposit() || !depositAmount || depositAmount <= 0"
+              class="w-full py-3.5 rounded-2xl btn-cyan-gradient font-black text-xs shadow-md shadow-[#0BB4D2]/25 hover:brightness-110 active:scale-95 transition disabled:opacity-50 flex items-center justify-center space-x-2"
+            >
+              <span>{{ submittingDeposit() ? '⏳' : '🚀' }}</span>
+              <span>{{ submittingDeposit() ? 'Submitting Payment Proof...' : 'I Have Paid & Submit Proof for Confirmation' }}</span>
+            </button>
+          </form>
         </div>
 
         <!-- 2. Cash Out / Withdraw -->
@@ -232,7 +353,7 @@ import { PortfolioSummary, Transaction, Wallet } from '../../../core/models/fint
                 <th class="py-3 px-4">Coin</th>
                 <th class="py-3 px-4">Amount</th>
                 <th class="py-3 px-4">USD Value</th>
-                <th class="py-3 px-4">Transaction Code</th>
+                <th class="py-3 px-4">Payment Proof</th>
                 <th class="py-3 px-4 text-right">Status</th>
               </tr>
             </thead>
@@ -250,17 +371,32 @@ import { PortfolioSummary, Transaction, Wallet } from '../../../core/models/fint
                 <td class="py-3.5 px-4 font-bold text-white">{{ tx.asset_symbol }}</td>
                 <td class="py-3.5 px-4">{{ tx.amount | number:'1.2-6' }}</td>
                 <td class="py-3.5 px-4 text-slate-200 font-bold">\${{ tx.amount_usd | number:'1.2-2' }}</td>
-                <td class="py-3.5 px-4 text-slate-400 font-mono">
-                  <span class="hover:text-cyan-300 cursor-pointer" title="{{ tx.tx_hash }}">
-                    {{ (tx.tx_hash || 'TX-PENDING').slice(0, 12) }}...
+                
+                <!-- Proof / Receipt Link -->
+                <td class="py-3.5 px-4 text-slate-400 font-sans">
+                  <button
+                    *ngIf="tx.receipt_url"
+                    (click)="viewReceipt(tx.receipt_url)"
+                    class="text-[10px] px-2 py-0.5 rounded-lg bg-[#0BB4D2]/20 hover:bg-[#0BB4D2]/30 text-cyan-300 font-bold inline-flex items-center space-x-1 transition"
+                  >
+                    <span>📎 View Receipt</span>
+                  </button>
+                  <span *ngIf="!tx.receipt_url" class="text-[10px] text-slate-500 font-mono">
+                    {{ (tx.tx_hash || 'TX-REF').slice(0, 10) }}...
                   </span>
                 </td>
+
+                <!-- Status Badge -->
                 <td class="py-3.5 px-4 text-right">
                   <span
-                    class="px-2.5 py-0.5 rounded-full text-[10px] font-bold font-sans"
-                    [ngClass]="tx.status === 'completed' ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30' : 'bg-amber-500/20 text-amber-300 border border-amber-500/30'"
+                    class="px-2.5 py-0.5 rounded-full text-[10px] font-bold font-sans inline-block"
+                    [ngClass]="{
+                      'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30': tx.status === 'completed',
+                      'bg-amber-500/20 text-amber-300 border border-amber-500/30': tx.status === 'pending',
+                      'bg-rose-500/20 text-rose-300 border border-rose-500/30': tx.status === 'failed' || tx.status === 'cancelled'
+                    }"
                   >
-                    {{ tx.status === 'completed' ? 'Completed' : 'Pending Review' }}
+                    {{ tx.status === 'completed' ? '✓ Credited' : (tx.status === 'pending' ? '⏳ Pending Review' : '✕ Declined') }}
                   </span>
                 </td>
               </tr>
@@ -312,6 +448,47 @@ import { PortfolioSummary, Transaction, Wallet } from '../../../core/models/fint
         </div>
       </div>
 
+      <!-- ========================================================================= -->
+      <!-- PAYMENT RECEIPT PROOF PREVIEW MODAL                                       -->
+      <!-- ========================================================================= -->
+      <div *ngIf="previewReceiptUrl()" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-sm">
+        <div class="bg-[#002625] border border-[#0BB4D2]/40 rounded-3xl max-w-xl w-full p-6 shadow-2xl space-y-4">
+          <div class="flex items-center justify-between border-b border-white/10 pb-3">
+            <h3 class="text-base font-black text-white flex items-center space-x-2">
+              <span>🧾 Payment Receipt Proof</span>
+            </h3>
+            <button
+              type="button"
+              (click)="previewReceiptUrl.set(null)"
+              class="w-8 h-8 rounded-full bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white flex items-center justify-center transition"
+            >
+              ✕
+            </button>
+          </div>
+
+          <div class="max-h-[70vh] overflow-auto rounded-2xl border border-white/10 bg-black/40 p-2 flex items-center justify-center">
+            <img [src]="getFullReceiptUrl(previewReceiptUrl()!)" alt="Payment Receipt" class="max-w-full h-auto rounded-xl object-contain shadow-lg" />
+          </div>
+
+          <div class="flex items-center justify-between pt-2 border-t border-white/10">
+            <a
+              [href]="getFullReceiptUrl(previewReceiptUrl()!)"
+              target="_blank"
+              class="text-xs text-cyan-300 font-bold hover:underline"
+            >
+              Open in new tab ↗
+            </a>
+            <button
+              type="button"
+              (click)="previewReceiptUrl.set(null)"
+              class="px-4 py-2 rounded-xl bg-white/10 text-white font-bold text-xs hover:bg-white/20 transition"
+            >
+              Close Preview
+            </button>
+          </div>
+        </div>
+      </div>
+
     </div>
   `
 })
@@ -330,7 +507,15 @@ export class WalletComponent implements OnInit {
   depositCopied = signal<boolean>(false);
   qrDataUrl = signal<string>('');
 
-  simulatedDepositAmount = 1000;
+  // Step 2: Payment Confirmation & Receipt state
+  depositAmount = 500;
+  depositTxHash = '';
+  depositNotes = '';
+  receiptFile: File | null = null;
+  receiptFileName = '';
+  receiptPreview = signal<string | null>(null);
+  submittingDeposit = signal<boolean>(false);
+  depositSubmittedNotice = signal<{ asset: string; amount: number; txId: number } | null>(null);
 
   // Withdrawal state
   withdrawAsset = 'USDT';
@@ -344,12 +529,13 @@ export class WalletComponent implements OnInit {
   demoPinHint = signal<string | null>(null);
 
   transactions = signal<Transaction[]>([]);
+  previewReceiptUrl = signal<string | null>(null);
 
   ngOnInit() {
     this.route.queryParamMap.subscribe(params => {
       const amt = params.get('amount');
       if (amt && !isNaN(Number(amt))) {
-        this.simulatedDepositAmount = Number(amt);
+        this.depositAmount = Number(amt);
       }
     });
 
@@ -411,14 +597,89 @@ export class WalletComponent implements OnInit {
     this.toast.success('Memo / Tag copied to clipboard');
   }
 
-  executeSandboxDeposit() {
-    this.walletService.sandboxDeposit(this.selectedDepositAsset, this.simulatedDepositAmount).subscribe({
+  onFileSelected(event: any) {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    if (file.size > 10 * 1024 * 1024) {
+      this.toast.error('File size exceeds 10MB limit');
+      return;
+    }
+
+    this.receiptFile = file;
+    this.receiptFileName = file.name;
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      this.receiptPreview.set(reader.result as string);
+    };
+    reader.readAsDataURL(file);
+  }
+
+  removeSelectedFile() {
+    this.receiptFile = null;
+    this.receiptFileName = '';
+    this.receiptPreview.set(null);
+  }
+
+  submitDepositConfirmation() {
+    const amount = Number(this.depositAmount);
+    if (!amount || isNaN(amount) || amount <= 0) {
+      this.toast.error('Please enter a valid deposit amount');
+      return;
+    }
+
+    const min = this.depositMinAmount();
+    if (min && amount < min) {
+      this.toast.error(`Minimum deposit for ${this.selectedDepositAsset} is ${min}`);
+      return;
+    }
+
+    this.submittingDeposit.set(true);
+
+    const formData = new FormData();
+    formData.append('asset', this.selectedDepositAsset);
+    formData.append('amount', String(amount));
+    formData.append('network', this.depositNetwork());
+    formData.append('destination_address', this.depositAddress());
+    if (this.depositTxHash) formData.append('tx_hash', this.depositTxHash);
+    if (this.depositNotes) formData.append('notes', this.depositNotes);
+    if (this.receiptFile) {
+      formData.append('receipt', this.receiptFile);
+    } else if (this.receiptPreview()) {
+      formData.append('receipt_base64', this.receiptPreview()!);
+    }
+
+    this.walletService.submitDepositRequest(formData).subscribe({
       next: (res) => {
+        this.submittingDeposit.set(false);
         this.toast.success(res.message);
+        this.depositSubmittedNotice.set({
+          asset: this.selectedDepositAsset,
+          amount: amount,
+          txId: res.data?.transaction_id || 0
+        });
+        this.removeSelectedFile();
+        this.depositTxHash = '';
+        this.depositNotes = '';
         this.loadTransactions();
       },
-      error: (err) => this.toast.error(err.error?.error || 'Deposit failed')
+      error: (err) => {
+        this.submittingDeposit.set(false);
+        this.toast.error(err.error?.error || 'Deposit confirmation failed to submit');
+      }
     });
+  }
+
+  viewReceipt(url: string) {
+    this.previewReceiptUrl.set(url);
+  }
+
+  getFullReceiptUrl(url: string): string {
+    if (!url) return '';
+    if (url.startsWith('http')) return url;
+    const base = environment.apiUrl.replace(/\/api\/?$/, '');
+    return `${base}${url.startsWith('/') ? '' : '/'}${url}`;
   }
 
   initiateWithdrawal() {

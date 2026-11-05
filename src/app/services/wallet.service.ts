@@ -26,6 +26,10 @@ export class WalletService {
     return this.http.post<any>(`${environment.apiUrl}/wallet/deposit-sandbox`, { asset, amount });
   }
 
+  submitDepositRequest(data: FormData | { asset: string; amount: number; tx_hash?: string; network?: string; notes?: string; destination_address?: string; receipt_base64?: string }): Observable<any> {
+    return this.http.post<any>(`${environment.apiUrl}/wallet/deposit-request`, data);
+  }
+
   initiateWithdrawal(withdrawal: { asset: string; amount: number; destination_address: string }): Observable<any> {
     return this.http.post<any>(`${environment.apiUrl}/wallet/withdraw/initiate`, withdrawal);
   }

@@ -5,6 +5,7 @@ import { RouterModule } from '@angular/router';
 import { AdminService } from '../../../services/admin.service';
 import { ToastService } from '../../../services/toast.service';
 import { AdminMetrics, Transaction, User } from '../../../core/models/fintech.models';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-admin-overview',
@@ -245,6 +246,14 @@ import { AdminMetrics, Transaction, User } from '../../../core/models/fintech.mo
                 <td class="py-3 px-3">
                   <div class="font-bold text-white">{{ tx.full_name || 'Client' }}</div>
                   <div class="text-[10px] text-slate-400 font-mono">{{ tx.account_id || ('ID #' + tx.user_id) }}</div>
+                  <a
+                    *ngIf="tx.receipt_url"
+                    [href]="getFullReceiptUrl(tx.receipt_url)"
+                    target="_blank"
+                    class="text-[10px] text-cyan-300 font-bold hover:underline inline-flex items-center space-x-1 mt-0.5"
+                  >
+                    <span>🧾 View Proof</span>
+                  </a>
                 </td>
                 <td class="py-3 px-3 font-mono font-bold text-white">
                   {{ tx.amount }} {{ tx.asset_symbol }}
@@ -252,15 +261,15 @@ import { AdminMetrics, Transaction, User } from '../../../core/models/fintech.mo
                 <td class="py-3 px-3 font-mono font-bold text-[#0BB4D2]">
                   \${{ tx.amount_usd | number:'1.2-2' }}
                 </td>
-                <td class="py-3 px-3 text-slate-400 text-xs">
+                <td class="py-3 px-3 text-slate-400 text-xs font-mono">
                   {{ tx.created_at | date:'short' }}
                 </td>
                 <td class="py-3 px-3 text-right space-x-2">
                   <button
                     (click)="approveTransaction(tx.id)"
-                    class="px-3.5 py-1.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-black font-black text-xs shadow-md transition"
+                    class="px-3 py-1.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-black font-black text-xs shadow-md transition"
                   >
-                    ✓ Approve
+                    ✓ Approve &amp; Release
                   </button>
                   <button
                     (click)="rejectTransaction(tx.id)"
@@ -536,6 +545,13 @@ export class OverviewComponent implements OnInit {
       },
       error: (err) => this.toast.error(err.error?.error || 'Failed to reject transaction')
     });
+  }
+
+  getFullReceiptUrl(url: string): string {
+    if (!url) return '';
+    if (url.startsWith('http')) return url;
+    const base = environment.apiUrl.replace(/\/api\/?$/, '');
+    return `${base}${url.startsWith('/') ? '' : '/'}${url}`;
   }
 
   openBalanceModal(user: any) {
